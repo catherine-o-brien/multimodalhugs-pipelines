@@ -1,6 +1,6 @@
 #! /bin/bash
 
-base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
+base="/home/cobrie/scratch/multimodalhugs-examples"
 scripts=$base/scripts
 
 # set to "false" or "true":

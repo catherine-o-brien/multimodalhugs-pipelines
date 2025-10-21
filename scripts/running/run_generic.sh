@@ -2,7 +2,7 @@
 
 # Default values for parameters if not set
 
-: "${base:="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"}"
+: "${base:="/home/cobrie/scratch/multimodalhugs-examples"}"
 : "${dry_run:="false"}"
 : "${model_name:="phoenix"}"
 : "${learning_rate:="5e-05"}"
@@ -66,28 +66,41 @@ if [[ $dry_run == "true" ]]; then
   SLURM_ARGS_EVALUATE=$DRY_RUN_SLURM_ARGS
 fi
 
-# preprocess data
+# preprocess data with mediapipe holistic
 
-id_preprocess=$(
+id_preprocess_with_holistic=$(
     $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
-    $scripts/preprocessing/phoenix_dataset_preprocessing.sh \
+    $scripts/preprocessing_with_holistic/preprocessing_with_holistic.sh \
     $base $dry_run
 )
 
-echo "  id_preprocess: $id_preprocess | $logs_sub/slurm-$id_preprocess.out" | tee -a $logs_sub/MAIN
+echo "  id_preprocess_with_holistic: $id_preprocess_with_holistic | $logs_sub/slurm-$id_preprocess_with_holistic.out" | tee -a $logs_sub/MAIN
+
+# preprocess data with mediapipe hands
+
+id_preprocess_with_mediapipehands=$(
+    $scripts/running/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    $SLURM_LOG_ARGS \
+    $scripts/preprocessing_with_mediapipehands/preprocessing_with_mediapipehands.sh \
+    $base $dry_run
+)
+
+echo "  id_preprocess_with_mediapipehands: $id_preprocess_with_mediapipehands | $logs_sub/slurm-$id_preprocess_with_mediapipehands.out" | tee -a $logs_sub/MAIN
 
 # load GPU modules at this point
 
 module load gpu cuda/12.6.2 cudnn/9.5.1.17-12
 
+<<comment
 # HF train (depends on preprocess)
 
 id_train=$(
     $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_TRAIN \
-    --dependency=afterok:$id_preprocess \
+    --dependency=afterok:$id_preprocess_with_holistic \
     $SLURM_LOG_ARGS \
     $scripts/training/train_phoenix.sh \
     $base $dry_run $model_name \
@@ -121,3 +134,5 @@ id_evaluate=$(
 )
 
 echo "  id_evaluate: $id_evaluate | $logs_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub/MAIN
+comment
+
