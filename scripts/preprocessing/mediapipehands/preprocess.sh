@@ -11,21 +11,21 @@ scripts=$base/scripts
 data=$base/data
 venvs=$base/venvs
 
-poses=$data/poses
-preprocessed=$data/preprocessed
+poses=$data/poses/mediapipehands
+preprocessed=$data/preprocessed/mediapipehands
 
 mkdir -p $data
 mkdir -p $poses $preprocessed
 
 # maybe skip
 
-if [[ -s $preprocessed/rwth_phoenix2014_t.train.tsv ]]; then
-    echo "Preprocessed file exists: $preprocessed/rwth_phoenix2014_t.train.tsv"
-    echo "Skipping"
-    exit 0
-else
-    echo "Preprocessed files do not exist yet"
-fi
+#if [[ -s $preprocessed/rwth_phoenix2014_t.train.tsv ]]; then
+    #echo "Preprocessed file exists: $preprocessed/mediapipehands/rwth_phoenix2014_t.train.tsv"
+    #echo "Skipping"
+    #exit 0
+#else
+    #echo "Preprocessed files do not exist yet"
+#fi
 
 # measure time
 
@@ -54,10 +54,11 @@ else
     dry_run_arg=""
 fi
 
-python $scripts/preprocessing/phoenix_dataset_preprocessing.py \
+python $scripts/preprocessing/mediapipehands/preprocess.py \
     --pose-dir $poses \
     --output-dir $preprocessed \
-    --tfds-data-dir $data/tensorflow_datasets $dry_run_arg
+    --tfds-data-dir $data/tensorflow_datasets \
+    --dry-run $dry_run_arg
 
 # sizes
 echo "Sizes of preprocessed TSV files:"

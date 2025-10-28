@@ -5,9 +5,11 @@ scripts=$base/scripts
 
 # set to "false" or "true":
 
-dry_run="false"
+dry_run="true"
 
 model_name="phoenix"
+
+estimator_name="mediapipehands"
 
 # best hyperparams found so far
 

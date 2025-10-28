@@ -13,25 +13,28 @@
 base=$1
 dry_run=$2
 model_name=$3
-learning_rate=$4
-gradient_accumulation_steps=$5
-warmup_steps=$6
-batch_size=$7
-label_smoothing_factor=$8
+estimator_name=$4
+learning_rate=$5
+gradient_accumulation_steps=$6
+warmup_steps=$7
+batch_size=$8
+label_smoothing_factor=$9
 
 data=$base/data
-preprocessed=$data/preprocessed
+preprocessed=$data/preprocessed/$estimator_name
 scripts=$base/scripts
 venvs=$base/venvs
 configs=$base/configs
 configs_sub=$configs/$model_name
 
 models=$base/models
-models_sub=$models/$model_name
+models_for_estimator=$models/$estimator_name
+models_sub=$models_for_estimator/$model_name
 
 mkdir -p $configs
 mkdir -p $configs_sub
 mkdir -p $models
+mkdir -p $models_for_estimator
 mkdir -p $models_sub
 
 # skip if checkpoint exists
@@ -96,8 +99,7 @@ python $scripts/training/create_config.py \
     --gradient-accumulation-steps $gradient_accumulation_steps \
     --warmup-steps $warmup_steps \
     --batch-size $batch_size \
-    --label-smoothing-factor $label_smoothing_factor \
-    --reduce-holistic-poses $dry_run_arg
+    --label-smoothing-factor $label_smoothing_factor 
 
 # https://github.com/GerrySant/multimodalhugs/issues/50
 
