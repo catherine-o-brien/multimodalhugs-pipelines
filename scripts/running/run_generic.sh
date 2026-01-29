@@ -64,12 +64,15 @@ DRY_RUN_TRAINING_SLURM_ARGS="--time=02:00:00 $gpu_parameters --cpus-per-task=2 -
 DRY_RUN_GENERIC_SLURM_ARGS="--cpus-per-task=2 --time=02:00:00 --mem=16G --partition=lowprio"
 
 if [[ $gpu_type == "v100" ]]; then
-  gpu_parameters="--gpus=V100:1 --partition lowprio"
+  echo "Using gpu type v100"
+  gpu_parameters="--gpus=V100:1 --partition=lowprio"
 elif [[ $gpu_type == "h100" ]]; then
-  gpu_parameters="--gpus=H100:1"
+  echo "Using gpu type h100"
+  gpu_parameters="--gpus=H100:1 --partition=lowprio"
 else
+  echo "Using other gpu type"
   # avoid L4 nodes with too little memory
-  gpu_parameters="--gpus=1 --constraint=GPUMEM32GB"
+  gpu_parameters="--gpus=1 --constraint=GPUMEM32GB --partition=lowprio"
 fi
 
 SLURM_ARGS_PREPROCESS="--time=24:00:00 $gpu_parameters_preprocessing --cpus-per-task=8 --mem=16G"
