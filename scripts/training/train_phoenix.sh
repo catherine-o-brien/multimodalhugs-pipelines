@@ -120,7 +120,7 @@ else
 fi
 
 python $scripts/training/create_config.py \
-    --run-name "phoenix-$estimator" \
+    --run-name "phoenix_$estimator" \
     --config-dir $configs_sub \
     --train-metadata-file $preprocessed/rwth_phoenix2014_t.train.tsv \
     --validation-metadata-file $preprocessed/rwth_phoenix2014_t.validation.tsv \
