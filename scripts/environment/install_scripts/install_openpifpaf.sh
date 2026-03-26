@@ -3,22 +3,28 @@
 ############################
 # openpifpaf (py310)
 ############################
-base=$(dirname "$0")/
-environment_scripts=$base/..
-scripts=$environment_scripts/..
+install_scripts=$(dirname "$0")
+environment=$install_scripts/..
+scripts=$environment/..
 base=$scripts/..
 venvs=$base/venvs
 
-source activate $venvs/openpifpaf
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate $venvs/openpifpaf
 tools=$base/tools/openpifpaf
 mkdir -p $tools
 
-# install fork of pose-format that extends to openpifpaf
+echo "Tools dir: $tools"
 
+module load gpumem32gb cuda/11.8.0 cudnn/8.7.0.84-11.8 miniforge3
+
+# install fork of pose-format that extends to openpifpaf
 pip uninstall -y pose-format
+rm -rf $tools/pose
 git clone -b new_estimators https://github.com/catherine-o-brien/pose.git $tools/pose
 cd $tools/pose/src/python
-pip install -e .
+python -m pip install -e . --no-cache-dir --no-user
+cd ../../..
 
 # install multimodalhugs
 
@@ -29,10 +35,9 @@ git clone https://github.com/GerrySant/multimodalhugs.git $tools/multimodalhugs
 
 (cd $tools/multimodalhugs && git checkout "5201c80f27aa70c460e8297a799dc5daccbd1b3b")
 
-(cd $tools/multimodalhugs && pip install .)
+(cd $tools/multimodalhugs && python -m pip install -e . --no-user)
 
-# install openpifpaf
-pip install "openpifpaf==0.13.11" --force-reinstall --no-cache-dir
+pip install openpifpaf --no-build-isolation --no-cache-dir --no-user
 
 OPENCV_VERSION=$(python - <<'EOF'
 import importlib.metadata as m
@@ -43,9 +48,7 @@ except m.PackageNotFoundError:
 EOF
 )
 
-pip install tensorflow==2.13.1 mediapipe==0.10.9 protobuf==3.20.3
-
-pip uninstall -y opencv-python opencv-python-headless
-pip install "opencv-python-headless==${OPENCV_VERSION}"
+python -m pip uninstall -y opencv-python opencv-python-headless
+python -m pip install "opencv-python-headless==${OPENCV_VERSION}"
 
 conda deactivate 

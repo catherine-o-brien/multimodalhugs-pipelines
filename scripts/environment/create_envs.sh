@@ -20,4 +20,10 @@ conda create -y --prefix $venvs/mediapipe python=3.11
 conda create -y --prefix $venvs/mmposewholebody python=3.8
 
 # venv for openpifpaf
-conda create -y --prefix $venvs/openpifpaf python=3.10.19
+conda create -y --prefix $venvs/openpifpaf python=3.9
+
+# venv for openpose
+conda create -y --prefix $venvs/openpose python=3.10
+
+# venv for sdpose 
+conda create -y --prefix $venvs/sdpose python=3.10

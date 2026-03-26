@@ -10,9 +10,12 @@ scripts=$base/scripts
 dry_run="true"
 
 # set to your desired estimator
-estimator="mediapipe" # options: mmposewholebody, mediapipe, openpifpaf
+estimator="mediapipe" # options: mmposewholebody, mediapipe, openpifpaf, sdpose
 
-model_name="phoenix_$estimator"
+# set to your desired dataset
+dataset="phoenix" # options: phoenix
+
+model_name="${dataset}_${estimator}"
 
 # best hyperparams found so far
 
@@ -22,3 +25,5 @@ label_smoothing_factor="0.1"
 gradient_accumulation_steps=3
 
 . $scripts/running/run_generic.sh
+
+

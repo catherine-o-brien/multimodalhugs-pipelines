@@ -4,8 +4,9 @@
 
 : "${base:="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"}"
 : "${dry_run:="false"}"
-: "${model_name:="phoenix"}"
+: "${model_name:="phoenix_mediapipe"}"
 : "${estimator:="mediapipe"}"
+: "${dataset:="phoenix"}"
 : "${learning_rate:="5e-05"}"
 : "${gradient_accumulation_steps:=1}"
 : "${warmup_steps:=0}"
@@ -27,7 +28,7 @@ module load miniforge3 cuda/11.8.0 cudnn/8.7.0.84-11.8
 
 scripts=$base/scripts
 logs=$base/logs
-logs_sub=$logs/$model_name/$estimator
+logs_sub=$logs/$model_name
 
 # logging
 
@@ -66,13 +67,20 @@ DRY_RUN_GENERIC_SLURM_ARGS="--cpus-per-task=2 --time=02:00:00 --mem=16G --partit
 if [[ $gpu_type == "v100" ]]; then
   echo "Using gpu type v100"
   gpu_parameters="--gpus=V100:1 --partition=lowprio"
+  gpu_parameters_preprocessing="--gpus=V100:4 --partition=lowprio" 
+elif [[ $gpu_type == "a100" ]]; then
+  echo "Using gpu type a100"
+  gpu_parameters="--gpus=A100:1 --partition=lowprio"
+  gpu_parameters_preprocessing="--gpus=A100:1 --partition=lowprio"
 elif [[ $gpu_type == "h100" ]]; then
   echo "Using gpu type h100"
   gpu_parameters="--gpus=H100:1 --partition=lowprio"
+  gpu_parameters_preprocessing="--gpus=H100:1 --partition=lowprio"
 else
   echo "Using other gpu type"
   # avoid L4 nodes with too little memory
   gpu_parameters="--gpus=1 --constraint=GPUMEM32GB --partition=lowprio"
+  gpu_parameters_preprocessing="--gpus=1 --constraint=GPUMEM32GB --partition=lowprio"
 fi
 
 SLURM_ARGS_PREPROCESS="--time=24:00:00 $gpu_parameters_preprocessing --cpus-per-task=8 --mem=16G"

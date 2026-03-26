@@ -13,6 +13,8 @@ scripts=$base/scripts
 data=$base/data
 venvs=$base/venvs
 
+estimator_base="${estimator%%+*}"
+
 estimator_data=$data/$estimator
 poses=$estimator_data/poses
 preprocessed=$estimator_data/preprocessed
@@ -43,9 +45,9 @@ which python
 echo "activate path:"
 which activate
 
-echo "Executing: source activate $venvs/$estimator" 
+echo "Executing: source activate $venvs/$estimator_base" 
 
-source activate $venvs/$estimator 
+source activate $venvs/$estimator_base
 
 echo "Python after activating:"
 which python

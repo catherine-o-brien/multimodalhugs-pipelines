@@ -21,6 +21,8 @@ models_sub=$models/$model_name
 translations=$base/translations
 translations_sub=$translations/$model_name/
 
+estimator_base="${estimator%%+*}"
+
 mkdir -p $translations
 mkdir -p $translations_sub
 
@@ -75,7 +77,7 @@ fi
 
 multimodalhugs-generate \
     --task "translation" \
-    --config_path $configs_sub/config-phoenix-$estimator.yaml \
+    --config_path $configs_sub/config_phoenix_$estimator.yaml \
     --metric_name "sacrebleu" \
     --generate_output_dir $translations_sub \
     --setup_path $models_sub/setup \
