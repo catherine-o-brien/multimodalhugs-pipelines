@@ -97,7 +97,7 @@ def generate_examples(estimator: str,
                 "video_to_pose", 
                 "--format", estimator, 
                 "-i", video_path, 
-                "-o", pose_filepath,
+                "-o", split_pose_dir,
             ] #TODO: change so that if dry-run is true, we use cpu processing 
             
             if dry_run:
